@@ -29,7 +29,7 @@ from get_qc_data import *
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 # qc_data_df = load_qc_data()
-qc_data_df, region_data_df, mtl_data_df, mtl_ed_df = load_qc_data()
+qc_data_df, region_data_df, mtl_data_df, mtl_ed_df, qc_ed_stretcher_df = load_qc_data()
 d = get_defaults(qc_data_df)
 p = display_sidebar(st, d, qc_data_df)
 m = SimSirModel(p)
@@ -79,15 +79,26 @@ mtl_chart = alt.Chart(mtl_data_df[mtl_data_df.arrondissement.isin(selected_arron
 ).interactive()  # .configure_legend(orient="bottom")
 st.altair_chart(mtl_chart, use_container_width=True)
 
-selected_hospital = st.multiselect('Emergency Department visits', mtl_ed_df.Installation.unique().tolist(), default=[
-                                   "L'Hôpital général juif Sir Mortimer B. Davis", "Centre hospitalier de St. Mary", "Hôpital Royal Victoria", "Hôpital général de Montréal"])
-mtl_chart = alt.Chart(mtl_ed_df[mtl_ed_df.Installation.isin(selected_hospital)].dropna()).mark_line(point=True).encode(
+selected_hospital_visits = st.multiselect('Montreal Emergency Department Visits', mtl_ed_df.Installation.unique().tolist(), default=[
+    "L'Hôpital général juif Sir Mortimer B. Davis", "Centre hospitalier de St. Mary", "Hôpital Royal Victoria", "Hôpital général de Montréal"])
+mtl_chart = alt.Chart(mtl_ed_df[mtl_ed_df.Installation.isin(selected_hospital_visits)].dropna()).mark_line(point=True).encode(
     x='monthdate(date)',
     y='Nombre inscriptions',
     color='Installation',
     tooltip=['date', 'Installation', 'Nombre inscriptions']
 ).interactive()  # .configure_legend(orient="bottom")
 st.altair_chart(mtl_chart, use_container_width=True)
+
+selected_hospital_stretchers = st.multiselect('Quebec Emergency Department Crowding', qc_ed_stretcher_df.installation.unique().tolist(), default=[
+    "L'Hôpital général Juif Sir Mortimer B. Davis", "Centre hospitalier de St. Mary", "Hôpital Royal Victoria", "Hôpital général de Montréal"])
+stretcher_chart = alt.Chart(qc_ed_stretcher_df[qc_ed_stretcher_df.installation.isin(selected_hospital_stretchers)].dropna()).mark_line(point=False).encode(
+    x="timestamp",
+    y='occupied',
+    color='installation',
+    tooltip=[
+        "timestamp", 'installation', 'occupied']
+).interactive()  # .configure_legend(orient="bottom")
+st.altair_chart(stretcher_chart, use_container_width=True)
 
 
 st.header('Projections')
