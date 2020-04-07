@@ -64,6 +64,8 @@ def display_header(st, m, p):
 # Penn Medicine to assist hospitals and public health officials with hospital capacity planning.
 # Please read [How to Use CHIME]({docs_url}) to customize inputs for your region.""".format(docs_url=DOCS_URL))
 
+    st.title('COVID-19 Hospital Impact Predictions')
+
     st.markdown(
         """The estimated number of currently infected individuals is **{total_infections:.0f}**. This is based on current inputs for
     Hospitalizations (**{current_hosp}**), Hospitalization rate (**{hosp_rate:.0%}**), Regional population (**{S}**),
@@ -296,7 +298,7 @@ def display_sidebar(st, d: Parameters, qc_data_df) -> Parameters:
         )
     )
     population = population_input()
-    market_share = market_share_pct_input()
+    market_share = 1.0  # market_share_pct_input()
     # known_infected = known_infected_input()
     current_hospitalized = current_hospitalized_input()
 
@@ -306,24 +308,24 @@ def display_sidebar(st, d: Parameters, qc_data_df) -> Parameters:
         )
     )
 
-    if st.sidebar.checkbox(
-        "I know the date of the first hospitalized case.",  # value=True
-    ):
-        date_first_hospitalized = date_first_hospitalized_input()
-        doubling_time = None
-    else:
-        doubling_time = doubling_time_input()
-        date_first_hospitalized = None
+    # if st.sidebar.checkbox(
+    #     "I know the date of the first hospitalized case.",  # value=True
+    # ):
+    #     date_first_hospitalized = date_first_hospitalized_input()
+    #     doubling_time = None
+    # else:
+    doubling_time = doubling_time_input()
+    date_first_hospitalized = None
 
-    if st.sidebar.checkbox(
-        "Social distancing measures have been implemented", value=False,
-        # value=(d.relative_contact_rate > EPSILON)
-    ):
-        mitigation_date = mitigation_date_input()
-        relative_contact_rate = relative_contact_pct_input()
-    else:
-        mitigation_date = None
-        relative_contact_rate = EPSILON
+    # if st.sidebar.checkbox(
+    #     "Social distancing measures have been implemented", value=False,
+    #     # value=(d.relative_contact_rate > EPSILON)
+    # ):
+    #     mitigation_date = mitigation_date_input()
+    #     relative_contact_rate = relative_contact_pct_input()
+    # else:
+    mitigation_date = None
+    relative_contact_rate = EPSILON
 
     st.sidebar.markdown(
         "### Severity Parameters [ℹ]({docs_url}/what-is-chime/parameters#severity-parameters)".format(
@@ -371,6 +373,18 @@ def display_sidebar(st, d: Parameters, qc_data_df) -> Parameters:
 
 
 def display_footer(st):
+
+    st.markdown(
+        """**Notice**: *There is a high
+degree of uncertainty about the details of COVID-19 infection, transmission, and the effectiveness of social distancing
+measures. Long-term projections made using this simplified model of outbreak progression should be treated with extreme caution.*
+    """
+    )
+    st.markdown(
+        """
+This tool was developed by [Predictive Healthcare](http://predictivehealthcare.pennmedicine.org/) at
+Penn Medicine to assist hospitals and public health officials with hospital capacity planning.
+Please read [How to Use CHIME]({docs_url}) to customize inputs for your region.""".format(docs_url=DOCS_URL))
     st.subheader("References & Acknowledgements")
     st.markdown(
         """* AHA Webinar, Feb 26, James Lawler, MD, an associate professor University of Nebraska Medical Center, What Healthcare Leaders Need To Know: Preparing for the COVID-19

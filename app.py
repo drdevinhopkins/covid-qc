@@ -66,11 +66,11 @@ admits_chart = build_admits_chart(
 st.altair_chart(admits_chart, use_container_width=True)
 st.markdown(build_descriptions(chart=admits_chart,
                                labels=p.labels, suffix=" Admissions"))
-display_download_link(
-    st,
-    filename=f"{p.current_date}_projected_admits.csv",
-    df=m.admits_df,
-)
+# display_download_link(
+#     st,
+#     filename=f"{p.current_date}_projected_admits.csv",
+#     df=m.admits_df,
+# )
 
 if st.checkbox("Show Projected Admissions in tabular form"):
     admits_modulo = 1
@@ -90,11 +90,11 @@ census_chart = build_census_chart(
 st.altair_chart(census_chart, use_container_width=True)
 st.markdown(build_descriptions(chart=census_chart,
                                labels=p.labels, suffix=" Census"))
-display_download_link(
-    st,
-    filename=f"{p.current_date}_projected_census.csv",
-    df=m.census_df,
-)
+# display_download_link(
+#     st,
+#     filename=f"{p.current_date}_projected_census.csv",
+#     df=m.census_df,
+# )
 
 if st.checkbox("Show Projected Census in tabular form"):
     census_modulo = 1
@@ -112,11 +112,11 @@ st.markdown("The number of susceptible, infected, and recovered individuals in t
 sim_sir_w_date_chart = build_sim_sir_w_date_chart(
     alt=alt, sim_sir_w_date_floor_df=m.sim_sir_w_date_floor_df)
 st.altair_chart(sim_sir_w_date_chart, use_container_width=True)
-display_download_link(
-    st,
-    filename=f"{p.current_date}_sim_sir_w_date.csv",
-    df=m.sim_sir_w_date_df,
-)
+# display_download_link(
+#     st,
+#     filename=f"{p.current_date}_sim_sir_w_date.csv",
+#     df=m.sim_sir_w_date_df,
+# )
 
 if st.checkbox("Show SIR Simulation in tabular form"):
     table_df = build_table(
