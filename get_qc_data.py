@@ -33,5 +33,10 @@ def load_qc_data():
     mtl_data_df.date = pd.to_datetime(mtl_data_df.date)
     mtl_data_df.total_case = pd.to_numeric(
         mtl_data_df.total_case, errors='coerce')  # .astype('Int64')
+
+    mtl_ed_df = pd.read_csv(
+        'https://www.dropbox.com/s/w7n297w7pnapezn/dailyMontrealEdStats.csv?dl=1')
+    mtl_ed_df.date = pd.to_datetime(mtl_ed_df.date)
+
     # return qc_data_df
-    return qc_data_df, region_data_df, mtl_data_df
+    return qc_data_df, region_data_df, mtl_data_df, mtl_ed_df

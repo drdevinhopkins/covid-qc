@@ -29,7 +29,7 @@ from get_qc_data import *
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 # qc_data_df = load_qc_data()
-qc_data_df, region_data_df, mtl_data_df = load_qc_data()
+qc_data_df, region_data_df, mtl_data_df, mtl_ed_df = load_qc_data()
 d = get_defaults(qc_data_df)
 p = display_sidebar(st, d, qc_data_df)
 m = SimSirModel(p)
@@ -43,7 +43,8 @@ qc_total_recovered = alt.Chart(qc_data_df.dropna()).transform_fold(
 ).mark_line(point=True).encode(
     x='monthdate(date)',
     y='number:Q',
-    color='measure:N'
+    color='measure:N',
+    tooltip=['date', 'measure:N', 'number:Q']
 ).configure_legend(orient="bottom").interactive()
 st.altair_chart(qc_total_recovered, use_container_width=True)
 
@@ -53,7 +54,8 @@ qc_death_hosp_icu = alt.Chart(qc_data_df.dropna()).transform_fold(
 ).mark_line(point=True).encode(
     x='monthdate(date)',
     y='number:Q',
-    color='measure:N'
+    color='measure:N',
+    tooltip=['date', 'measure:N', 'number:Q']
 ).configure_legend(orient="bottom").interactive()
 st.altair_chart(qc_death_hosp_icu, use_container_width=True)
 
@@ -63,8 +65,8 @@ regions_chart = alt.Chart(region_data_df[region_data_df.region.isin(selected_reg
     x='monthdate(date)',
     y='total_case',
     color='region',
-)  # .configure_legend(orient="bottom")
-# .interactive()
+    tooltip=['date', 'region', 'total_case']
+).interactive()  # .configure_legend(orient="bottom")
 st.altair_chart(regions_chart, use_container_width=True)
 
 selected_arrondissement = st.multiselect(
@@ -73,8 +75,18 @@ mtl_chart = alt.Chart(mtl_data_df[mtl_data_df.arrondissement.isin(selected_arron
     x='monthdate(date)',
     y='total_case',
     color='arrondissement',
-)  # .configure_legend(orient="bottom")
-# .interactive()
+    tooltip=['date', 'arrondissement', 'total_case']
+).interactive()  # .configure_legend(orient="bottom")
+st.altair_chart(mtl_chart, use_container_width=True)
+
+selected_hospital = st.multiselect('Emergency Department visits', mtl_ed_df.Installation.unique().tolist(), default=[
+                                   "L'Hôpital général juif Sir Mortimer B. Davis", "Centre hospitalier de St. Mary", "Hôpital Royal Victoria", "Hôpital général de Montréal"])
+mtl_chart = alt.Chart(mtl_ed_df[mtl_ed_df.Installation.isin(selected_hospital)].dropna()).mark_line(point=True).encode(
+    x='monthdate(date)',
+    y='Nombre inscriptions',
+    color='Installation',
+    tooltip=['date', 'Installation', 'Nombre inscriptions']
+).interactive()  # .configure_legend(orient="bottom")
 st.altair_chart(mtl_chart, use_container_width=True)
 
 
