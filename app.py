@@ -28,35 +28,58 @@ from get_qc_data import *
 # In dev, this should be shown
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-qc_data_df = load_qc_data()
+# qc_data_df = load_qc_data()
+qc_data_df, region_data_df, mtl_data_df = load_qc_data()
 d = get_defaults(qc_data_df)
 p = display_sidebar(st, d, qc_data_df)
 m = SimSirModel(p)
 
+st.title('COVID-19 Hospital Impact Predictions')
 
-display_header(st, m, p)
 
 st.subheader("Current Situation (Quebec)")
 
-qc_total_recovered = alt.Chart(qc_data_df).transform_fold(
+qc_total_recovered = alt.Chart(qc_data_df.dropna()).transform_fold(
     ['total_case', 'total_recovered'],
     as_=['measure', 'number']
-).mark_line().encode(
+).mark_line(point=True).encode(
     x='monthdate(date)',
     y='number:Q',
     color='measure:N'
 ).configure_legend(orient="bottom").interactive()
 st.altair_chart(qc_total_recovered, use_container_width=True)
 
-qc_death_hosp_icu = alt.Chart(qc_data_df).transform_fold(
+qc_death_hosp_icu = alt.Chart(qc_data_df.dropna()).transform_fold(
     ['total_death', 'hospitalisations', 'ICU'],
     as_=['measure', 'number']
-).mark_line().encode(
+).mark_line(point=True).encode(
     x='monthdate(date)',
     y='number:Q',
     color='measure:N'
 ).configure_legend(orient="bottom").interactive()
 st.altair_chart(qc_death_hosp_icu, use_container_width=True)
+
+selected_regions = st.multiselect(
+    'Total cases by region(s)', region_data_df.region.unique().tolist(), default=['Montréal', 'Montérégie', 'Laval', 'Estrie', 'Mauricie - Centre du Québec'])  # default=region_data_df.region.unique().tolist()
+regions_chart = alt.Chart(region_data_df[region_data_df.region.isin(selected_regions)].dropna()).mark_line(point=True).encode(
+    x='monthdate(date)',
+    y='total_case',
+    color='region',
+)  # .configure_legend(orient="bottom")
+# .interactive()
+st.altair_chart(regions_chart, use_container_width=True)
+
+selected_arrondissement = st.multiselect(
+    'Total cases by Montreal neighbourhood', mtl_data_df.arrondissement.unique().tolist(), default=['Côte-Saint-Luc', 'Outremont', 'Hampstead', 'LaSalle', 'Côte-des-Neiges–Notre-Dame-de-Grâce'])
+mtl_chart = alt.Chart(mtl_data_df[mtl_data_df.arrondissement.isin(selected_arrondissement)].dropna()).mark_line(point=True).encode(
+    x='monthdate(date)',
+    y='total_case',
+    color='arrondissement',
+)  # .configure_legend(orient="bottom")
+# .interactive()
+st.altair_chart(mtl_chart, use_container_width=True)
+
+display_header(st, m, p)
 
 
 st.subheader("New Admissions")

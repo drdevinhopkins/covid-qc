@@ -19,4 +19,19 @@ def load_qc_data():
     # qc_data_df.total_recovered = qc_data_df.total_recovered.astype('Int64')
     # qc_data_df.hospitalisations = qc_data_df.hospitalisations.astype('Int64')
     # qc_data_df.ICU = qc_data_df.ICU.astype('Int64')
-    return qc_data_df
+
+    region_data_df = pd.read_csv(
+        'https://raw.githubusercontent.com/pboardman/covid19-data-quebec/master/csv/region.csv')
+    region_data_df.date = pd.to_datetime(region_data_df.date)
+    region_data_df.total_case = pd.to_numeric(
+        region_data_df.total_case, errors='coerce')  # .astype('Int64')
+    region_data_df.new_case = pd.to_numeric(
+        region_data_df.new_case, errors='coerce')  # .astype('Int64')
+
+    mtl_data_df = pd.read_csv(
+        'https://raw.githubusercontent.com/pboardman/covid19-data-quebec/master/csv/montreal.csv')
+    mtl_data_df.date = pd.to_datetime(mtl_data_df.date)
+    mtl_data_df.total_case = pd.to_numeric(
+        mtl_data_df.total_case, errors='coerce')  # .astype('Int64')
+    # return qc_data_df
+    return qc_data_df, region_data_df, mtl_data_df
