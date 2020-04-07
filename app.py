@@ -34,10 +34,8 @@ d = get_defaults(qc_data_df)
 p = display_sidebar(st, d, qc_data_df)
 m = SimSirModel(p)
 
-st.title('COVID-19 Hospital Impact Predictions')
-
-
-st.subheader("Current Situation (Quebec)")
+st.title('Quebec COVID-19 Projections')
+st.header("Current Situation")
 
 qc_total_recovered = alt.Chart(qc_data_df.dropna()).transform_fold(
     ['total_case', 'total_recovered'],
@@ -79,13 +77,14 @@ mtl_chart = alt.Chart(mtl_data_df[mtl_data_df.arrondissement.isin(selected_arron
 # .interactive()
 st.altair_chart(mtl_chart, use_container_width=True)
 
+
+st.header('Projections')
 display_header(st, m, p)
-
-
 st.subheader("New Admissions")
-st.markdown("Projected number of **daily** COVID-19 admissions. \n\n _NOTE: Now including estimates of prior admissions for comparison._")
+# \n\n _NOTE: Now including estimates of prior admissions for comparison._
+st.markdown("Projected number of **daily** COVID-19 admissions.")
 admits_chart = build_admits_chart(
-    alt=alt, admits_floor_df=m.admits_floor_df, max_y_axis=p.max_y_axis)
+    alt=alt, admits_floor_df=m.admits_floor_df[m.admits_floor_df.date >= p.current_date], max_y_axis=p.max_y_axis)
 st.altair_chart(admits_chart, use_container_width=True)
 st.markdown(build_descriptions(chart=admits_chart,
                                labels=p.labels, suffix=" Admissions"))
@@ -109,7 +108,7 @@ if st.checkbox("Show Projected Admissions in tabular form"):
 st.subheader("Admitted Patients (Census)")
 st.markdown("Projected **census** of COVID-19 patients, accounting for arrivals and discharges \n\n _NOTE: Now including estimates of prior census for comparison._")
 census_chart = build_census_chart(
-    alt=alt, census_floor_df=m.census_floor_df, max_y_axis=p.max_y_axis)
+    alt=alt, census_floor_df=m.census_floor_df[m.census_floor_df.date >= p.current_date], max_y_axis=p.max_y_axis)
 st.altair_chart(census_chart, use_container_width=True)
 st.markdown(build_descriptions(chart=census_chart,
                                labels=p.labels, suffix=" Census"))
