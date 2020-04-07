@@ -307,7 +307,7 @@ def display_sidebar(st, d: Parameters, qc_data_df) -> Parameters:
     )
 
     if st.sidebar.checkbox(
-        "I know the date of the first hospitalized case.", value=True
+        "I know the date of the first hospitalized case.",  # value=True
     ):
         date_first_hospitalized = date_first_hospitalized_input()
         doubling_time = None
@@ -316,8 +316,8 @@ def display_sidebar(st, d: Parameters, qc_data_df) -> Parameters:
         date_first_hospitalized = None
 
     if st.sidebar.checkbox(
-        "Social distancing measures have been implemented",
-        value=(d.relative_contact_rate > EPSILON)
+        "Social distancing measures have been implemented", value=False,
+        # value=(d.relative_contact_rate > EPSILON)
     ):
         mitigation_date = mitigation_date_input()
         relative_contact_rate = relative_contact_pct_input()
