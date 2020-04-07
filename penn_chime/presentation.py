@@ -200,7 +200,7 @@ def display_sidebar(st, d: Parameters, qc_data_df) -> Parameters:
     )
     current_date_input = DateInput(
         # default was d.current_date
-        st_obj, "Current date (default is today)", value=qc_data_df[['date', 'hospitalisations']].dropna().date.max().date(),
+        st_obj, "Data updated on", value=qc_data_df[['date', 'hospitalisations']].dropna().date.max().date(),
     )
     date_first_hospitalized_input = DateInput(
         st_obj, "Date of first hospitalized case (enter this date to have CHIME estimate the initial doubling time)",
@@ -284,15 +284,15 @@ def display_sidebar(st, d: Parameters, qc_data_df) -> Parameters:
     )
 
     # Build in desired order
-    st.sidebar.markdown(
-        """**CHIME [{version}](https://github.com/CodeForPhilly/chime/releases/tag/{version}) ({change_date})**""".format(
-            change_date=CHANGE_DATE,
-            version=VERSION,
-        )
-    )
+    # st.sidebar.markdown(
+    #     """**CHIME [{version}](https://github.com/CodeForPhilly/chime/releases/tag/{version}) ({change_date})**""".format(
+    #         change_date=CHANGE_DATE,
+    #         version=VERSION,
+    #     )
+    # )
 
     st.sidebar.markdown(
-        "### Hospital Parameters [ℹ]({docs_url}/what-is-chime/parameters#hospital-parameters)".format(
+        "### Parameters [ℹ]({docs_url}/what-is-chime/parameters#hospital-parameters)".format(
             docs_url=DOCS_URL
         )
     )
